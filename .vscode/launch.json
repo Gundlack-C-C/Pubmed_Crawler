@@ -24,9 +24,7 @@
             "module": "scrapy",
             "args": [
                 "crawl",
-                "bier_in_franken",
-                "-o",
-                "bier_in_franken.json"
+                "bier_in_franken"
             ],
             "console": "integratedTerminal"
         }
