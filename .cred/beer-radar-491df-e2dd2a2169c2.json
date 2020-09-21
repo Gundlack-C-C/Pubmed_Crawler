@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "beer-radar-491df",
+  "private_key_id": "e2dd2a2169c240a05900198d72ec34b0d9f12f79",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCiGDlFY0RP1idR\ncED50deHbOHMGVRxM53A/7dDejbv4jSyM1xK2hoXCIKqfHiu7tmWMoBJO8MIHD6q\nxiqHSLyHCRICSwu4FtXDy5FiWfQB3gcsHESuSqfjKmPbQvajtRFA9aHsNW/fAjZ+\nsl+w/UGIIZivupQfl3YPQiBidf94rKThTmE4zxPIEmqkEd5WXykjnDefYaaed3xV\nrzGbk8Z9G36dlY7QT6Ic+UdkylrwwK5yNElBns+ky2jJvKGc38jd+8Xt+N1kuFav\nlTRuGGSuExCFKohteqrGzC0ibVImA3rqHPok68JZzgHtShOMuuxCGnTptAbPVN6Q\nPkqmzTozAgMBAAECggEAEqkTPse0v4l52/Lo/VmI+brb1lvm0A65zyl2duWE7uIY\nYENwETXr4abwfqFMYLx31Bta5Wi52nSAn7b8gmJ/QanA/FPuCh1Rh/QmzS8UhiUs\np4lW5scKw34dIiAitf9MTdwj7fDLljLHr0I9qJR0jNrBRx8FmmAcuUOgPXWJbuIn\nULb0AquZiuhUrFTlcCxrDn9ZNYxwE5iI+S7D5vsjhAh9w8pyT6NEOfBVc43cFwcd\nWykYWgjdnnmi7RtIEOymY5mjiBnqP+Zi4IO9NpB3QkxzV007jHbABAsie0ZNi6wn\n2Nj+x56ddPTmxqlihKBEiycMjIu1FUTWIyO2kDE3sQKBgQDjgYQOzG38hPlE1DL7\n+Y3c+PdST9qCaqlbHvkQ4jO+1R2XLOCdhqWsNZKRcmMVQuo6UZDS9/SZG3uz/voM\nhz5hYdshz+v50Xg59wT2snWJLYHyg8C3YCTudT9TNuUeQwCNoXjRwBnVz8qGkBqC\nHlDYMMJjkHI/AZ1XJy1cC1oA/wKBgQC2ZW+5OadpbSeYEepcXZ06VTm0n2/JbH6w\nTNIkDti3w9CxHjlch7/z31RF14ILcg4iEofKa+qxtOG4riM/JBVhxqO8VJujHLIY\nR4GXkpcZwF4S/2Fwz4wZjq2LDMfaPcD1TX+u2pT9/otC3zpAFh8HK8GgcG9CziB2\n668Vm9eSzQKBgCuoDs9IK1LpsWujzKTNnotouwzwhd3A2f7CUskKnyNfge4gjnmr\n/N6u6RFAAgNyc7/9Ju1U53r56yL/Krx8t1u4i3RRkda+e3OkEy/Dzwoj0WvYHIMT\n0AJyPVSalBzafqCu+6BEXLDKzvJDdNLDPoA92w+ACGxOwwKWYf3nr73BAoGAVPqx\nsPTBoQbwOZOvQ1WCWZk3h4X5CTl5VR6VkaMxKX0cEElqpEfDERZuJxQfTMHY/9ru\nVUsuT5lcyTSoy1Q+eg2YX7hzwu0ttM4r/LiZma/cpLFDbtHkDkxBYtWTj4TSD/gJ\nkyfX3vbnX0Kt2wnzbt3eGqgHznJHAeEQ89pl98kCgYArnyjHE13DG1G1iWfhoFQi\nm1f78YnYhnjaSgkaawExM5DipDQHjWvBvh1tSpq9LoSosjbBdi3IumfrfIkJfhZO\naWbl0EgXkCJmqsUUaqex19UgieGP0Io0Ah82hTTIqIS4BzUv8jgGRcd40kouxS99\nDnQOlq7/e3TKHlLt1NFXzA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "beer-radar-491df@appspot.gserviceaccount.com",
+  "client_id": "110198737215776287495",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/beer-radar-491df%40appspot.gserviceaccount.com"
+}

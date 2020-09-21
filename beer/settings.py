@@ -14,6 +14,11 @@ BOT_NAME = 'beer'
 SPIDER_MODULES = ['beer.spiders']
 NEWSPIDER_MODULE = 'beer.spiders'
 
+DB_SETTINGS = {
+    'db': '/Beer',
+    'cred': './.cred/beer-radar-491df-e2dd2a2169c2.json',
+    'host': 'https://beer-radar-491df.firebaseio.com'
+}
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'beer (+http://www.yourdomain.com)'
@@ -39,34 +44,34 @@ ROBOTSTXT_OBEY = True
 #TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
+# DEFAULT_REQUEST_HEADERS = {
 #   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 #   'Accept-Language': 'en',
-#}
+# }
 
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-#SPIDER_MIDDLEWARES = {
-#    'beer.middlewares.BeerSpiderMiddleware': 543,
-#}
+SPIDER_MIDDLEWARES = {
+    'beer.middlewares.BeerSpiderMiddleware': 543,
+}
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
+# DOWNLOADER_MIDDLEWARES = {
 #    'beer.middlewares.BeerDownloaderMiddleware': 543,
-#}
+# }
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
+# EXTENSIONS = {
 #    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+# }
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'beer.pipelines.BeerPipeline': 300,
-#}
+ITEM_PIPELINES = {
+    'beer.pipelines.BeerPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
