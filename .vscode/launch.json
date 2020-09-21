@@ -16,6 +16,19 @@
                 "${fileBasenameNoExtension}.json"
             ],
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Crawl: Bier In Franken",
+            "type": "python",
+            "request": "launch",
+            "module": "scrapy",
+            "args": [
+                "crawl",
+                "bier_in_franken",
+                "-o",
+                "bier_in_franken.json"
+            ],
+            "console": "integratedTerminal"
         }
     ]
 }
