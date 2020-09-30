@@ -24,9 +24,9 @@ class BierInFrankenSpider(scrapy.Spider):
                 meta={"loader": loader}
             )
 
-        #next_page = response.css('a.paging--next::attr(href)')[0].get()
-        # if next_page is not None:
-        #   yield response.follow(next_page, self.parse)
+        next_page = response.css('a.paging--next::attr(href)')[0].get()
+        if next_page is not None:
+            yield response.follow(next_page, self.parse)
 
     def parse_detail(self, response):
         loader = response.meta.get('loader')
