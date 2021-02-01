@@ -9,19 +9,19 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'beer'
+BOT_NAME = 'publications'
 
-SPIDER_MODULES = ['beer.spiders', 'beer.pipelines']
-NEWSPIDER_MODULE = 'beer.spiders'
+SPIDER_MODULES = ['crawler.spiders', 'crawler.pipelines']
+NEWSPIDER_MODULE = 'crawler.spiders'
 
 DB_SETTINGS = {
-    'db': '/Beer',
+    'db': '/Publication',
     'cred': './.cred/beer-radar-491df-e2dd2a2169c2.json',
     'host': 'https://beer-radar-491df.firebaseio.com'
 }
 
 FILE_SETTINGS = {
-    'out': './out/beer.json'
+    'out': './out/publications.json'
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -74,8 +74,8 @@ COOKIES_ENABLED = False
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'beer.pipelines.BeerFirebasePipeline': 300,
-    'beer.pipelines.JSONPipeline': 543,
+    #'beer.pipelines.BeerFirebasePipeline': 300,
+    'crawler.pipelines.JSONPipeline': 543,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

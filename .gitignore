@@ -1,3 +1,7 @@
 *.stackdump
 *.pyc
-*out/
+out/*
+data/*
+*.log
+app/data/*
+app/out/*
