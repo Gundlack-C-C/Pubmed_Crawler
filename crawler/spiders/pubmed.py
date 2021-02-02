@@ -13,9 +13,9 @@ class PubmedSpider(scrapy.Spider):
     #          '"market surveillance', 'literature searching', '"literature search"' '"medical regulation"', '"review literature"']
     max_pages = 1000
 
-    def __init__(self, query='', _id='', ** kwargs):
+    def __init__(self, query='', session_id='', ** kwargs):
         self.start_urls = [f'{base_url}/?term={query}']
-        self._id = _id
+        self.session_id = session_id
         super().__init__(**kwargs)
 
     def parse(self, response):
