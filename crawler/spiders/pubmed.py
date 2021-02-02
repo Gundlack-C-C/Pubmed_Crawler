@@ -9,9 +9,14 @@ base_url = "https://pubmed.ncbi.nlm.nih.gov"
 
 class PubmedSpider(scrapy.Spider):
     name = 'pubmed'
-    topics = ['NLP', 'Natural+Language+Processing', 'literature+search',
-              'post+market+surveillance', 'literature+review', 'post market']
-    start_urls = [f'{base_url}/?term={x}' for x in topics]
+    # topics = ['NLP', 'Natural+Language+Processing', '"literature review"',
+    #          '"market surveillance', 'literature searching', '"literature search"' '"medical regulation"', '"review literature"']
+    max_pages = 1000
+
+    def __init__(self, query='', _id='', ** kwargs):
+        self.start_urls = [f'{base_url}/?term={query}']
+        self._id = _id
+        super().__init__(**kwargs)
 
     def parse(self, response):
         for item in response.css('article'):
