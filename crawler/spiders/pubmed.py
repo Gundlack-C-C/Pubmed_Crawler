@@ -19,20 +19,26 @@ class PubmedSpider(scrapy.Spider):
         super().__init__(**kwargs)
 
     def parse(self, response):
+        total = response.css("div.results-amount span.value::text")[0].get()
+        total = int(total.replace(",", ""))
+        pages = round(total/10)
         for item in response.css('article'):
             loader = ItemLoader(item=Article(), selector=item)
 
             title = item.css("a.docsum-title *::text").getall()
             loader.add_value("title", "".join(title))
-            
+
+            short = item.css("div.full-view-snippet *::text").getall()
+            loader.add_value("short", "".join(short))
+
             url = item.css("a.docsum-title::attr(href)")[0].get()
             loader.add_value("url", f'{base_url}{url}')
-            loader.add_css("short", "div.full-view-snippet::text")
+
             loader.add_css("_id", "a.docsum-title::attr(data-article-id)")
             loader.add_css("journal", "span.full-journal-citation::text")
 
             yield loader.load_item()
 
-        #next_page = response.css('a.paging--next::attr(href)')[0].get()
-        # if next_page is not None:
-        #    yield response.follow(next_page, self.parse)
+        if response.url.find('page=') < 0:
+            for i in range(min(pages, self.max_pages)):
+                yield response.follow(f'{response.url}&page={i}', self.parse)
