@@ -1,3 +1,2 @@
 scrapy
-scrapy-selenium
-webdriver-manager
+firebase-admin
