@@ -34,6 +34,8 @@ ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS = 32
+DOWNLOAD_WARNSIZE = 33554432
+DOWNLOAD_MAXSIZE = 1073741824
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
