@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 
-from crawler.items import Article
+from ..items import Article
 from scrapy.loader import ItemLoader
 
 base_url = "https://pubmed.ncbi.nlm.nih.gov"
@@ -19,7 +19,7 @@ class PubmedSpider(scrapy.Spider):
 
             title = item.css("a.docsum-title *::text").getall()
             loader.add_value("title", "".join(title))
-            
+
             url = item.css("a.docsum-title::attr(href)")[0].get()
             loader.add_value("url", f'{base_url}{url}')
             loader.add_css("short", "div.full-view-snippet::text")
