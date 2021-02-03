@@ -19,9 +19,7 @@ class PubmedSpider(scrapy.Spider):
         super().__init__(**kwargs)
 
     def parse(self, response):
-        total = response.css("div.results-amount span.value::text")[0].get()
-        total = int(total.replace(",", ""))
-        pages = round(total/10)
+        # Get all articles from response
         for item in response.css('article'):
             loader = ItemLoader(item=Article(), selector=item)
 
@@ -39,6 +37,12 @@ class PubmedSpider(scrapy.Spider):
 
             yield loader.load_item()
 
+        # Get all other pages if on first page
         if response.url.find('page=') < 0:
+            total = response.css(
+                "div.results-amount span.value::text")[0].get()
+            self.total = int(total.replace(",", ""))
+            pages = round(self.total/self.page_size)
+
             for i in range(min(pages, self.max_pages)):
                 yield response.follow(f'{response.url}&page={i}', self.parse)
