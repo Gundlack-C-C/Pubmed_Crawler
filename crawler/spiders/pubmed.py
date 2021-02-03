@@ -12,10 +12,9 @@ class PubmedSpider(scrapy.Spider):
     max_pages = 1000
     page_size = 10
 
-    def __init__(self, query='', session_id='', ** kwargs):
+    def __init__(self, query='', ** kwargs):
         self.start_urls = [f'{base_url}/?term={query}']
         self.query = query
-        self.session_id = session_id
         super().__init__(**kwargs)
 
     def parse(self, response):
