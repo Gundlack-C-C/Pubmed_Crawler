@@ -11,13 +11,15 @@
 
 BOT_NAME = 'publications'
 
-SPIDER_MODULES = ['crawler.spiders', 'crawler.pipelines']
+SPIDER_MODULES = ['crawler.spiders',
+                  'crawler.pipelines', 'crawler.pipe_firebase']
+
 NEWSPIDER_MODULE = 'crawler.spiders'
 
 DB_SETTINGS = {
     'db': '/Publication',
-    'cred': './.cred/beer-radar-491df-e2dd2a2169c2.json',
-    'host': 'https://beer-radar-491df.firebaseio.com'
+    'cred': './.cred/491df-e2dd2a2169c2.json',
+    'host': 'https://pubmed-fire.firebaseio.com'
 }
 
 FILE_SETTINGS = {
@@ -32,6 +34,8 @@ ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS = 32
+DOWNLOAD_WARNSIZE = 33554432
+DOWNLOAD_MAXSIZE = 1073741824
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -74,7 +78,7 @@ COOKIES_ENABLED = False
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    #'beer.pipelines.BeerFirebasePipeline': 300,
+    'crawler.pipe_firebase.FirebasePipeline': 300,
     'crawler.pipelines.JSONPipeline': 543,
 }
 

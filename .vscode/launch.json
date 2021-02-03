@@ -18,15 +18,20 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Crawl: Bier In Franken",
+            "name": "Crawl: pubmed",
             "type": "python",
             "request": "launch",
             "module": "scrapy",
             "args": [
                 "crawl",
-                "bier_in_franken"
+                "pubmed",
+                "-a",
+                "query=NLP",
+                "-a",
+                "session_id=123"
             ],
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

@@ -5,3 +5,5 @@ data/*
 *.log
 app/data/*
 app/out/*
+crawler/spiders/__pycache__/
+.cred/
