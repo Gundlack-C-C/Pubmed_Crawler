@@ -11,8 +11,7 @@
 
 BOT_NAME = 'publications'
 
-SPIDER_MODULES = ['crawler.spiders',
-                  'crawler.pipelines', 'crawler.pipe_firebase']
+SPIDER_MODULES = ['crawler.spiders', 'crawler.pipelines']
 
 NEWSPIDER_MODULE = 'crawler.spiders'
 
