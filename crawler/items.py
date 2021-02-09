@@ -22,3 +22,4 @@ class Article(scrapy.Item):
         str.strip), output_processor=TakeFirst())
     journal = scrapy.Field(default="", input_processor=MapCompose(
         str.strip), output_processor=TakeFirst())
+    keywords = scrapy.Field(default=[])
