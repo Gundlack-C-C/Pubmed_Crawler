@@ -6,11 +6,10 @@ from scrapy.loader import ItemLoader
 
 base_url = "https://pubmed.ncbi.nlm.nih.gov"
 
-
-class PubmedSpider(scrapy.Spider):
+class PubmedPeekSpider(scrapy.Spider):
     name = 'pubmed'
-    max_pages = 1000
     page_size = 10
+    max_pages = 10000/page_size
 
     def __init__(self, query='', ** kwargs):
         self.start_urls = [f'{base_url}/?term={query}']
@@ -18,16 +17,32 @@ class PubmedSpider(scrapy.Spider):
         super().__init__(**kwargs)
 
     def parse(self, response):
+        urls = []
+        total = 0
         # Get all other pages if on first page
         if response.url.find('page=') < 0:
             total = response.css(
                 "div.results-amount span.value::text")[0].get()
-            self.total = int(total.replace(",", ""))
-            pages = round(self.total/self.page_size)
+            total = int(total.replace(",", ""))
+            pages = round(total/self.page_size)
 
             for i in range(min(pages, self.max_pages)):
-                yield response.follow(f'{response.url}&page={i}', self.parse)
+                urls.append(f'{response.url}&page={i}')
 
+        yield({"total": total, "urls": urls})
+
+
+class PubmedSpider(scrapy.Spider):
+    name = 'pubmed'
+    max_pages = 1000
+    page_size = 10
+
+    def __init__(self, urls=[], ** kwargs):
+        assert len(urls) > 0, "No urls to crawl"
+        self.start_urls = urls
+        super().__init__(**kwargs)
+
+    def parse(self, response):
         # Get all articles from response
         for item in response.css('article'):
             loader = ItemLoader(item=Article(), selector=item)
