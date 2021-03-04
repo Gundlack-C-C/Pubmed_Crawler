@@ -7,7 +7,7 @@ from scrapy.loader import ItemLoader
 base_url = "https://pubmed.ncbi.nlm.nih.gov"
 
 class PubmedPeekSpider(scrapy.Spider):
-    name = 'pubmed'
+    name = 'peek'
     page_size = 10
     max_pages = 10000/page_size
 
@@ -33,13 +33,13 @@ class PubmedPeekSpider(scrapy.Spider):
 
 
 class PubmedSpider(scrapy.Spider):
-    name = 'pubmed'
+    name = 'items'
     max_pages = 1000
     page_size = 10
 
-    def __init__(self, urls=[], ** kwargs):
-        assert len(urls) > 0, "No urls to crawl"
-        self.start_urls = urls
+    def __init__(self, url="", ** kwargs):
+        assert len(url) > 0, "No urls to crawl"
+        self.start_urls = url
         super().__init__(**kwargs)
 
     def parse(self, response):
