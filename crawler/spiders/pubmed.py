@@ -18,11 +18,10 @@ class PubmedPeekSpider(scrapy.Spider):
 
     def parse(self, response):
         total = 0
-        # Get all other pages if on first page
-        if response.url.find('page=') < 0:
-            total = response.css(
-                "div.results-amount span.value::text")[0].get()
-            total = int(total.replace(",", ""))
+
+        total_dom = response.css("div.results-amount span.value::text")
+        if(len(total_dom) > 0):
+            total = int(total_dom[0].get().replace(",", ""))
 
         yield({"total": total, "url": response.url, "query": self.query})
 
