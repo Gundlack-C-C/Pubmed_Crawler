@@ -33,13 +33,13 @@ class PubmedPeekSpider(scrapy.Spider):
 
 
 class PubmedSpider(scrapy.Spider):
-    name = 'items'
+    name = 'pubmed'
     max_pages = 1000
     page_size = 10
 
-    def __init__(self, url="", ** kwargs):
-        assert len(url) > 0, "No urls to crawl"
-        self.start_urls = url
+    def __init__(self, query='', ** kwargs):
+        self.start_urls = [f'{base_url}/?term={query}']
+        self.query = query
         super().__init__(**kwargs)
 
     def parse(self, response):
@@ -60,3 +60,13 @@ class PubmedSpider(scrapy.Spider):
             loader.add_css("journal", "span.full-journal-citation::text")
 
             yield loader.load_item()
+
+        # Get all other pages if on first page
+        if response.url.find('page=') < 0:
+            total = response.css(
+                "div.results-amount span.value::text")[0].get()
+            self.total = int(total.replace(",", ""))
+            pages = round(self.total/self.page_size)
+
+            for i in range(min(pages, self.max_pages)):
+                yield response.follow(f'{response.url}&page={i}', self.parse)
