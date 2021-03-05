@@ -17,19 +17,14 @@ class PubmedPeekSpider(scrapy.Spider):
         super().__init__(**kwargs)
 
     def parse(self, response):
-        urls = []
         total = 0
         # Get all other pages if on first page
         if response.url.find('page=') < 0:
             total = response.css(
                 "div.results-amount span.value::text")[0].get()
             total = int(total.replace(",", ""))
-            pages = round(total/self.page_size)
 
-            for i in range(min(pages, self.max_pages)):
-                urls.append(f'{response.url}&page={i}')
-
-        yield({"total": total, "urls": urls})
+        yield({"total": total, "url": response.url, "query": self.query})
 
 
 class PubmedSpider(scrapy.Spider):
