@@ -1,10 +1,29 @@
 # -*- coding: utf-8 -*-
 import scrapy
-
+import json
+from urllib.request import urlopen
 from ..items import Article
 from scrapy.loader import ItemLoader
 
 base_url = "https://pubmed.ncbi.nlm.nih.gov"
+db = 'pubmed'
+
+
+def getIDs(term):
+    url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db={db}&term={term}&retmax=100000&sort=relevance&retmode=json"
+
+    ref_data = urlopen(url)
+    data_raw = ref_data.read()
+
+    data = json.loads(data_raw)
+
+    results = data['esearchresult']
+    return results['idlist']
+
+
+def getXmlArticlesUrl(ids):
+    return f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={','.join(ids)}&retmode=xml&rettype=abstract"
+
 
 class PubmedPeekSpider(scrapy.Spider):
     name = 'peek'
@@ -29,38 +48,44 @@ class PubmedPeekSpider(scrapy.Spider):
 class PubmedSpider(scrapy.Spider):
     name = 'pubmed'
     max_pages = 1000
-    page_size = 10
+    page_size = 100
 
     def __init__(self, query='', ** kwargs):
-        self.start_urls = [f'{base_url}/?term={query}']
+        ids = getIDs(query)
+        ids_batched = [ids[i*self.page_size:(i+1)*self.page_size]
+                       for i in range(0, round(len(ids)/self.page_size))]
+        self.ids = ids
+        self.start_urls = [getXmlArticlesUrl(ids) for ids in ids_batched]
         self.query = query
         super().__init__(**kwargs)
 
     def parse(self, response):
         # Get all articles from response
-        for item in response.css('article'):
+        for item in response.xpath('PubmedArticle'):
             loader = ItemLoader(item=Article(), selector=item)
 
-            title = item.css("a.docsum-title *::text").getall()
-            loader.add_value("title", "".join(title))
+            # Get Pubmed ID
+            _id = item.xpath("MedlineCitation/PMID/text()").extract_first()
+            loader.add_value("_id", _id)
+            loader.add_value("url", f'{base_url}/{_id}/')
 
-            short = item.css("div.full-view-snippet *::text").getall()
-            loader.add_value("short", "".join(short))
+            article = item.xpath('MedlineCitation/Article')
+            # Get Article Content
+            title = article.xpath("ArticleTitle/text()").extract_first()
+            short = article.xpath("Abstract").extract_first()
 
-            url = item.css("a.docsum-title::attr(href)")[0].get()
-            loader.add_value("url", f'{base_url}{url}')
+            loader.add_value("title", title)
+            loader.add_value("short", short)
 
-            loader.add_css("_id", "a.docsum-title::attr(data-article-id)")
-            loader.add_css("journal", "span.full-journal-citation::text")
+            # Get Journal Info
+            journal = article.xpath('Journal')
+            journal_title = journal.xpath('Title/text()').extract_first()
+            journal_year = journal.xpath(
+                'JournalIssue/PubDate/Year/text()').extract_first()
+            journal_month = journal.xpath(
+                'JournalIssue/PubDate/Month/text()').extract_first()
+
+            loader.add_value(
+                "journal", f"{journal_title}, {journal_year}-{journal_month}")
 
             yield loader.load_item()
-
-        # Get all other pages if on first page
-        if response.url.find('page=') < 0:
-            total = response.css(
-                "div.results-amount span.value::text")[0].get()
-            self.total = int(total.replace(",", ""))
-            pages = round(self.total/self.page_size)
-
-            for i in range(min(pages, self.max_pages)):
-                yield response.follow(f'{response.url}&page={i}', self.parse)
