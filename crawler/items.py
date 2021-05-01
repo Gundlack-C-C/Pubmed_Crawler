@@ -7,6 +7,7 @@
 
 import scrapy
 from itemloaders.processors import Join, MapCompose, TakeFirst
+from w3lib.html import remove_tags
 
 
 class Article(scrapy.Item):
@@ -15,7 +16,7 @@ class Article(scrapy.Item):
     title = scrapy.Field(default="", input_processor=MapCompose(
         str.strip), output_processor=TakeFirst())
     short = scrapy.Field(default="", input_processor=MapCompose(
-        str.strip), output_processor=TakeFirst())
+        remove_tags, str.strip), output_processor=TakeFirst())
     authors = scrapy.Field(default="", input_processor=MapCompose(
         str.strip), output_processor=TakeFirst())
     url = scrapy.Field(input_processor=MapCompose(
