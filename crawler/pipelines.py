@@ -7,6 +7,7 @@
 from scrapy.exporters import JsonItemExporter
 import os
 
+
 class JSONPipeline(object):
     @ classmethod
     def from_crawler(cls, crawler):
@@ -15,8 +16,8 @@ class JSONPipeline(object):
         if not file_settings or 'out' not in file_settings.keys():
             raise "FILE_SETTINGS missing or incomplete for JSONPipeline"
 
-        path = file_settings['out']
-        overwrite = file_settings['overwrite']
+        path = file_settings.get('out', './out/pubmed_result.json')
+        overwrite = file_settings.get('overwrite', True)
         return cls(path, overwrite)
 
     def __init__(self, path="data_export.json", overwrite=False):
@@ -25,7 +26,7 @@ class JSONPipeline(object):
 
         if overwrite and os.path.isfile(path):
             os.remove(path)
-            
+
         self.file = open(path, 'wb')
         self.exporter = JsonItemExporter(
             self.file, encoding='utf-8', ensure_ascii=False)
