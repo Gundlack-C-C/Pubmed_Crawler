@@ -129,4 +129,4 @@ if __name__ == '__main__':
     print(f'{len(service.result)} Items found for [{query}]')
     T = timeit.default_timer() - tic
 
-    print(f'Total: {round(T,2)}s p.Item: {round(T/len(service.result),2)}s')
+    print(f'Total: {round(T,2)}s p.Item: {round(T/len(service.result),3)}s')
