@@ -85,11 +85,10 @@ class SessionService():
         PIPELINE['Crawler.crawler.pipelines.JSONPipeline'] = 543
         self.settings['ITEM_PIPELINES'] = PIPELINE
         self.settings['FILE_SETTINGS'] = settings if settings else settings_default
-        self.settings['RETRY_TIMES'] = 4
-        self.settings['DOWNLOAD_DELAY '] = 0.5
+        self.settings['RETRY_TIMES'] = 5
         self.settings['AUTOTHROTTLE_ENABLED'] = True
-        self.settings['AUTOTHROTTLE_MAX_DELAY'] = 2.0
-        self.settings['AUTOTHROTTLE_START_DELAY'] = 0.5
+        self.settings['AUTOTHROTTLE_MAX_DELAY'] = 1.0
+        self.settings['AUTOTHROTTLE_START_DELAY'] = 0.1
         self.settings['AUTOTHROTTLE_TARGET_CONCURRENCY'] = 3.0
 
     def crawler_results(self, signal, sender, item, response, spider):
@@ -104,7 +103,7 @@ class SessionService():
         dispatcher.connect(self.crawler_results, signal=signals.item_passed)
 
         process = CrawlerProcess(settings=self.settings)
-        process.crawl(PubmedSpider, query=self.query, page_size=500)
+        process.crawl(PubmedSpider, query=self.query, page_size=250)
         process.start()
 
         dispatcher.disconnect(self.crawler_results, signal=signals.item_passed)
