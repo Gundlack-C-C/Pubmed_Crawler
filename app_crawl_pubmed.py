@@ -104,7 +104,7 @@ class SessionService():
         dispatcher.connect(self.crawler_results, signal=signals.item_passed)
 
         process = CrawlerProcess(settings=self.settings)
-        process.crawl(PubmedSpider, query=self.query)
+        process.crawl(PubmedSpider, query=self.query, page_size=500)
         process.start()
 
         dispatcher.disconnect(self.crawler_results, signal=signals.item_passed)

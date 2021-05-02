@@ -47,13 +47,11 @@ class PubmedPeekSpider(scrapy.Spider):
 
 class PubmedSpider(scrapy.Spider):
     name = 'pubmed'
-    max_pages = 1000
-    page_size = 100
 
-    def __init__(self, query='', ** kwargs):
+    def __init__(self, query='', page_size=100, ** kwargs):
         ids = getIDs(query)
-        ids_batched = [ids[i*self.page_size:(i+1)*self.page_size]
-                       for i in range(0, round(len(ids)/self.page_size))]
+        ids_batched = [ids[i*page_size:(i+1)*page_size]
+                       for i in range(0, round(len(ids)/page_size))]
         self.ids = ids
         self.start_urls = [getXmlArticlesUrl(ids) for ids in ids_batched]
         self.query = query
