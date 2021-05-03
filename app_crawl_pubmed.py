@@ -67,7 +67,11 @@ class SessionService():
         self.settings['SPIDER_MODULES'] = ['Crawler.crawler.spiders']
         self.settings['LOG_ENABLED'] = LOG_ENABLED
         self.settings['LOG_LEVEL'] = LOG_LEVEL
-
+        self.settings['RETRY_TIMES'] = 5
+        self.settings['AUTOTHROTTLE_ENABLED'] = True
+        self.settings['AUTOTHROTTLE_MAX_DELAY'] = 1.0
+        self.settings['AUTOTHROTTLE_START_DELAY'] = 0.1
+        self.settings['AUTOTHROTTLE_TARGET_CONCURRENCY'] = 3.0
         self.result = []
 
         logging.getLogger('scrapy').propagate = LOG_ENABLED
@@ -85,11 +89,6 @@ class SessionService():
         PIPELINE['Crawler.crawler.pipelines.JSONPipeline'] = 543
         self.settings['ITEM_PIPELINES'] = PIPELINE
         self.settings['FILE_SETTINGS'] = settings if settings else settings_default
-        self.settings['RETRY_TIMES'] = 5
-        self.settings['AUTOTHROTTLE_ENABLED'] = True
-        self.settings['AUTOTHROTTLE_MAX_DELAY'] = 1.0
-        self.settings['AUTOTHROTTLE_START_DELAY'] = 0.1
-        self.settings['AUTOTHROTTLE_TARGET_CONCURRENCY'] = 3.0
 
     def crawler_results(self, signal, sender, item, response, spider):
         self.result.append(dict(item))
