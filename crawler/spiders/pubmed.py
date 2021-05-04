@@ -10,7 +10,8 @@ db = 'pubmed'
 
 
 def getIDs(term):
-    url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db={db}&term={term}&retmax=100000&sort=relevance&retmode=json"
+    term = term.replace(' ', "%20")
+    url = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db={db}&term={term}&retmax=100000&sort=relevance&retmode=json'
 
     ref_data = urlopen(url)
     data_raw = ref_data.read()
@@ -22,7 +23,7 @@ def getIDs(term):
 
 
 def getXmlArticlesUrl(ids):
-    return f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={','.join(ids)}&retmode=xml&rettype=abstract"
+    return f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={",".join(ids)}&retmode=xml&rettype=abstract'
 
 
 class PubmedPeekSpider(scrapy.Spider):
