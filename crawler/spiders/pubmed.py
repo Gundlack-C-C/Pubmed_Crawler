@@ -51,8 +51,9 @@ class PubmedSpider(scrapy.Spider):
 
     def __init__(self, query='', page_size=100, ** kwargs):
         ids = getIDs(query)
+
         ids_batched = [ids[i*page_size:(i+1)*page_size]
-                       for i in range(0, round(len(ids)/page_size))]
+                       for i in range(0, round(len(ids)/page_size))] if len(ids) > page_size else [ids]
         self.ids = ids
         self.start_urls = [getXmlArticlesUrl(ids) for ids in ids_batched]
         self.query = query
@@ -71,7 +72,7 @@ class PubmedSpider(scrapy.Spider):
             article = item.xpath('MedlineCitation/Article')
             # Get Article Content
             title = article.xpath("ArticleTitle/text()").extract_first()
-            short = article.xpath("Abstract").extract_first()
+            short = article.xpath("Abstract/AbstractText/text()").extract()
 
             loader.add_value("title", title)
             loader.add_value("short", short)
