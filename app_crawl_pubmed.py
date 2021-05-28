@@ -68,7 +68,8 @@ if __name__ == '__main__':
         logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
         logging.info(f"Crawler Start!")
         logging.info(f"Arguments: [{args}]")
-
+        logging.info(f"Query: [{query}]")
+        logging.info(f"Query ID: [{query_id}]")
         tic = timeit.default_timer()
 
         ###################
