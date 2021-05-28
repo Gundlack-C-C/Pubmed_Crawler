@@ -12,7 +12,7 @@ mkdir -p $PATH_OUT
 
 #Run
 echo "Starting Container with Image - ${IMAGE} ..." | tee -a ${PATH_LOG}/crawler.log
-docker run --rm \
+docker run --rm -d\
 	--mount type=bind,src="$(pwd)"/.out,dst=/usr/src/app/.out \
 	--mount type=bind,src="$(pwd)"/.log,dst=/usr/src/app/.log \
 	${IMAGE} \
