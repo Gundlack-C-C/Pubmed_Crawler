@@ -34,10 +34,10 @@ if __name__ == '__main__':
         # Setup Argument Parser
         parser = argparse.ArgumentParser(description='Argument Parser')
         parser.add_argument('query', type=str, help='query to search for')
-        parser.add_argument('session', type=str, help='session identifier')
-        parser.add_argument('folder_out', type=str, help='folder output')
+        parser.add_argument('--out', type=str,
+                            help='folder output', default="./.out")
         parser.add_argument('-l', '--log', type=str,
-                            help='Target path for logging default: "./.log/app_embedding.log"', default="./.log/app_embedding.log")
+                            help='Target path for logging.', default=None)
         parser.add_argument('--model', type=str,
                             help='Target path for Transformers model default: "./.model"', default="./.model")
         parser.add_argument(
@@ -53,21 +53,23 @@ if __name__ == '__main__':
         ###################
         # Setup Logging
         ###################
-        LOGFILE = args.log
+        query = args.query
+        query_id = str2hex(query)
+        LOGFILE = args.log if args.log else f'./.log/{query_id}.crawler.log'
 
         if not os.path.exists(os.path.abspath(os.path.dirname(LOGFILE))):
             os.makedirs(os.path.abspath(os.path.dirname(LOGFILE)))
 
+        if os.path.isfile(LOGFILE):
+            os.remove(LOGFILE)
+
         logging.basicConfig(filename=LOGFILE, level=LOG_LEVEL,
                             format='%(asctime)s %(levelname)-8s %(message)s')
         logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
-        logging.info(f"Embedding Start!")
+        logging.info(f"Crawler Start!")
         logging.info(f"Arguments: [{args}]")
 
         tic = timeit.default_timer()
-        session_id = args.session
-        query = args.query
-        query_id = str2hex(query)
 
         ###################
         # Init Crawler Settings
@@ -106,12 +108,12 @@ if __name__ == '__main__':
         ###################
         # Write Results
         ###################
-        FOLDEROUT = args.folder_out
+        FOLDEROUT = args.out
         if not os.path.exists(os.path.abspath(os.path.dirname(FOLDEROUT))):
             os.makedirs(os.path.abspath(os.path.dirname(FOLDEROUT)))
 
         # Query Results
-        QUERYOUT = f"{FOLDEROUT}{query_id}.query.dat"
+        QUERYOUT = f"{FOLDEROUT}/{query_id}.query.dat"
         logging.info(f"Store Query Data [{QUERYOUT}] ...")
         _ids = list(set([x['_id'] for x in result]))
         query_data = {
@@ -123,7 +125,7 @@ if __name__ == '__main__':
         logging.info("... Store Query Data Sucess!")
 
         # Article Results
-        ARTICLEOUT = f"{FOLDEROUT}{query_id}.article.dat"
+        ARTICLEOUT = f"{FOLDEROUT}/{query_id}.article.dat"
         logging.info(f"Store Article Data [{ARTICLEOUT}] ...")
         article_data = {
             '_id': query_id,
