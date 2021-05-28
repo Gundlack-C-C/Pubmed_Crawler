@@ -71,7 +71,7 @@ COOKIES_ENABLED = False
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'crawler.pipelines.JSONPipeline': 543,
+    # 'crawler.pipelines.JSONPipeline': 543,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
