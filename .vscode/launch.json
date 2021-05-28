@@ -41,9 +41,7 @@
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "args": [
-                "\"Literature Search\" + NLP",
-                "Crawler_Test",
-                "./.out/Crawler_Test.articles.json",
+                "\"Literature Search\" + NLP"
             ]
         },
         {
@@ -55,8 +53,6 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "\"Literature Search\" + NLP",
-                "Crawler_Test",
-                "./.out/Crawler_Test.articles.json",
                 "--production"
             ]
         }
