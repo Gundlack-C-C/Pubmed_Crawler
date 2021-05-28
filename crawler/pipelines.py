@@ -16,7 +16,7 @@ class JSONPipeline(object):
         if not file_settings or 'out' not in file_settings.keys():
             raise "FILE_SETTINGS missing or incomplete for JSONPipeline"
 
-        path = file_settings.get('out', './out/pubmed_result.json')
+        path = file_settings.get('out', './.out/pubmed_result.json')
         overwrite = file_settings.get('overwrite', True)
         return cls(path, overwrite)
 
