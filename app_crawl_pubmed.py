@@ -1,131 +1,141 @@
-
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir) 
-
-import scrapy
-from scrapy.crawler import CrawlerProcess
+import timeit
+import binascii
+import logging
+import pickle
+from crawler.spiders.pubmed import PubmedSpider
+from scrapy.signalmanager import dispatcher
+from scrapy import signals
 from scrapy.utils.project import get_project_settings
+from scrapy.crawler import CrawlerProcess
+import scrapy
+import argparse
+import os
+import sys
+import inspect
+currentdir = os.path.dirname(os.path.abspath(
+    inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
+
 
 # Callbacks
-from scrapy import signals
-from scrapy.signalmanager import dispatcher
-from Crawler.crawler.spiders.pubmed import PubmedSpider, PubmedPeekSpider
 
-import logging
-import uuid
-import binascii
-import timeit
-
-logger = logging.getLogger("SessionService")
 
 def empty_fn(x, y):
     pass
 
+
 def str2hex(text):
     return binascii.hexlify(text.encode()).decode('utf-8')
 
-class SessionPeekService():
-    def __init__(self, queries, LOG_ENABLED=False, LOG_LEVEL="INFO"):
-        assert isinstance(queries, list)
-        # Input Properties
-        self.queries = queries
-
-        # Result Properties
-        self.results = {}
-
-        # Scrapy Settings
-        self.settings = get_project_settings()
-        self.settings['SPIDER_MODULES'] = ['Crawler.crawler.spiders']
-        self.settings['LOG_ENABLED'] = LOG_ENABLED
-        self.settings['LOG_LEVEL'] = LOG_LEVEL
-       
-        logging.getLogger('scrapy').propagate = LOG_ENABLED
-        
-    def crawler_results(self, signal, sender, item, response, spider):
-        query_id = str2hex(item['query'])
-        self.results[query_id] = item
-
-    def get_total(self):
-        dispatcher.connect(self.crawler_results, signal=signals.item_passed)
-
-        process = CrawlerProcess(self.settings)
-        [process.crawl(PubmedPeekSpider, query) for query in self.queries]
-        process.start()
-
-        dispatcher.disconnect(self.crawler_results, signal=signals.item_passed)
-
-class SessionService():
-    def __init__(self, query, session_id, LOG_ENABLED=False, LOG_LEVEL="INFO", crawler_process=None):
-        assert isinstance(query, str)
-        self.query = query
-        self.query_id = str2hex(query)
-        self.session_id = session_id
-
-        self.settings = get_project_settings()
-        self.settings['SPIDER_MODULES'] = ['Crawler.crawler.spiders']
-        self.settings['LOG_ENABLED'] = LOG_ENABLED
-        self.settings['LOG_LEVEL'] = LOG_LEVEL
-        self.settings['RETRY_TIMES'] = 5
-        self.settings['AUTOTHROTTLE_ENABLED'] = True
-        self.settings['AUTOTHROTTLE_MAX_DELAY'] = 1.0
-        self.settings['AUTOTHROTTLE_START_DELAY'] = 0.1
-        self.settings['AUTOTHROTTLE_TARGET_CONCURRENCY'] = 3.0
-        self.result = []
-
-        logging.getLogger('scrapy').propagate = LOG_ENABLED
-
-    def __get_PIPELINES(self):
-        return self.settings['ITEM_PIPELINES'] if "ITEM_PIPELINES" in self.settings.keys() else {}
-
-    def enable_JSONPipeline(self, settings=None):
-        settings_default = {
-            'out': f'./.out/{self.query_id}.json',
-            'overwrite': True
-        }
-        self.settings['SPIDER_MODULES'].append('Crawler.crawler.pipelines')
-        PIPELINE = self.__get_PIPELINES()
-        PIPELINE['Crawler.crawler.pipelines.JSONPipeline'] = 543
-        self.settings['ITEM_PIPELINES'] = PIPELINE
-        self.settings['FILE_SETTINGS'] = settings if settings else settings_default
-
-    def crawler_results(self, signal, sender, item, response, spider):
-        self.result.append(dict(item))
-    
-    def start(self):
-        logger.info(f"SessionService [{self.query_id}] START")
-        logger.debug(f"Setup crawler for [{self.query}] - [{self.query_id}]")
-        logger.debug(self.settings)
-
-        # Query result
-        dispatcher.connect(self.crawler_results, signal=signals.item_passed)
-
-        process = CrawlerProcess(settings=self.settings)
-        process.crawl(PubmedSpider, query=self.query, page_size=250)
-        process.start()
-
-        dispatcher.disconnect(self.crawler_results, signal=signals.item_passed)
-        logger.info(f"SessionService [{self.query_id}] READY")
 
 if __name__ == '__main__':
-    tic = timeit.default_timer()
-    session_id = "SessionService_Test"
-    query = "NLP"
-    query_id = str2hex(query)
+    try:
+        # Setup Argument Parser
+        parser = argparse.ArgumentParser(description='Argument Parser')
+        parser.add_argument('query', type=str, help='query to search for')
+        parser.add_argument('session', type=str, help='session identifier')
+        parser.add_argument('folder_out', type=str, help='folder output')
+        parser.add_argument('-l', '--log', type=str,
+                            help='Target path for logging default: "./.log/app_embedding.log"', default="./.log/app_embedding.log")
+        parser.add_argument('--model', type=str,
+                            help='Target path for Transformers model default: "./.model"', default="./.model")
+        parser.add_argument(
+            '-c', '--cached', help='Use cached results if available - Output File already existing and not older than 5 days. Default=False', action='store_true')
+        parser.add_argument(
+            '-p', '--production', help="Enable production mode. Default=False", action='store_true')
+        args = parser.parse_args()
 
-    service = SessionService(
-        query=query, session_id=session_id, LOG_ENABLED=False, LOG_LEVEL="DEBUG")
-    
-    # Write results to JSON file
-    settings_JSON = {
-        'out': f'./.out/{session_id}.{query_id}.json',
-        'overwrite': True
-    }
-    service.enable_JSONPipeline(settings=settings_JSON)
+        PRODUCTION = args.production
+        USE_CACHED = args.cached
+        LOG_ENABLED = not PRODUCTION
+        LOG_LEVEL = logging.INFO if PRODUCTION else logging.DEBUG
+        ###################
+        # Setup Logging
+        ###################
+        LOGFILE = args.log
 
-    service.start()
-    print(f'{len(service.result)} Items found for [{query}]')
-    T = timeit.default_timer() - tic
+        if not os.path.exists(os.path.abspath(os.path.dirname(LOGFILE))):
+            os.makedirs(os.path.abspath(os.path.dirname(LOGFILE)))
 
-    print(f'Total: {round(T,2)}s p.Item: {round(T/len(service.result),3)}s')
+        logging.basicConfig(filename=LOGFILE, level=LOG_LEVEL,
+                            format='%(asctime)s %(levelname)-8s %(message)s')
+        logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+        logging.info(f"Embedding Start!")
+        logging.info(f"Arguments: [{args}]")
+
+        tic = timeit.default_timer()
+        session_id = args.session
+        query = args.query
+        query_id = str2hex(query)
+
+        ###################
+        # Init Crawler Settings
+        ###################
+        settings = get_project_settings()
+        settings['SPIDER_MODULES'] = ['Crawler.crawler.spiders']
+        settings['LOG_ENABLED'] = LOG_ENABLED
+        settings['LOG_LEVEL'] = LOG_LEVEL
+        settings['RETRY_TIMES'] = 5
+        settings['AUTOTHROTTLE_ENABLED'] = True
+        settings['AUTOTHROTTLE_MAX_DELAY'] = 1.0
+        settings['AUTOTHROTTLE_START_DELAY'] = 0.1
+        settings['AUTOTHROTTLE_TARGET_CONCURRENCY'] = 3.0
+
+        # Disable/Enable scrapy logging if LOG_ENABLED
+        logging.getLogger('scrapy').propagate = LOG_ENABLED
+        ###################
+        # Start Crawler
+        ###################
+        result = []
+        logging.info("Start Crawling ...")
+
+        def on_item_passed(signal, sender, item, response):
+            result.append(dict(item))
+
+        dispatcher.connect(on_item_passed, signal=signals.item_passed)
+        process = CrawlerProcess(settings=settings)
+        process.crawl(PubmedSpider, query=query)
+        process.start()
+        dispatcher.disconnect(on_item_passed, signal=signals.item_passed)
+        T = timeit.default_timer() - tic
+
+        logging.info(f'{len(result)} Items found for [{query}]')
+        logging.info(f'Total: {round(T,2)}s p.Item: {round(T/len(result),3)}s')
+        logging.info("... Finish Crawling!")
+        ###################
+        # Write Results
+        ###################
+        FOLDEROUT = args.folder_out
+        if not os.path.exists(os.path.abspath(os.path.dirname(FOLDEROUT))):
+            os.makedirs(os.path.abspath(os.path.dirname(FOLDEROUT)))
+
+        # Query Results
+        QUERYOUT = f"{FOLDEROUT}{query_id}.query.dat"
+        logging.info(f"Store Query Data [{QUERYOUT}] ...")
+        _ids = list(set([x['_id'] for x in result]))
+        query_data = {
+            '_id': query_id,
+            'query': query,
+            'articles': _ids
+        }
+        pickle.dump(query_data, open(QUERYOUT, 'wb'))
+        logging.info("... Store Query Data Sucess!")
+
+        # Article Results
+        ARTICLEOUT = f"{FOLDEROUT}{query_id}.article.dat"
+        logging.info(f"Store Article Data [{ARTICLEOUT}] ...")
+        article_data = {
+            '_id': query_id,
+            'query': query,
+            'articles': result
+        }
+        pickle.dump(article_data, open(ARTICLEOUT, 'wb'))
+        logging.info("... Store Article Data Sucess!")
+        logging.info("Crawler Success!")
+    except Exception as e:
+        ###################
+        # Error Management
+        ###################
+        logging.error("Crawler Error!")
+        logging.error(e)
