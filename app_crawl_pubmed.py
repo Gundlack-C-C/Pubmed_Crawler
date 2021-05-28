@@ -1,14 +1,3 @@
-import timeit
-import binascii
-import logging
-import pickle
-from crawler.spiders.pubmed import PubmedSpider
-from scrapy.signalmanager import dispatcher
-from scrapy import signals
-from scrapy.utils.project import get_project_settings
-from scrapy.crawler import CrawlerProcess
-import scrapy
-import argparse
 import os
 import sys
 import inspect
@@ -16,6 +5,20 @@ currentdir = os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
+
+import timeit
+import binascii
+import logging
+import pickle
+from crawler.spiders.pubmed import PubmedSpider
+
+import scrapy
+from scrapy.signalmanager import dispatcher
+from scrapy import signals
+from scrapy.utils.project import get_project_settings
+from scrapy.crawler import CrawlerProcess
+
+import argparse
 
 
 # Callbacks
