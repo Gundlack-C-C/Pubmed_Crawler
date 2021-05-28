@@ -32,6 +32,33 @@
             ],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Run Crawler: Pubmed",
+            "type": "python",
+            "request": "launch",
+            "program": "./app_crawl_pubmed.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "\"Literature Search\" + NLP",
+                "Crawler_Test",
+                "./.out/Crawler_Test.articles.json",
+            ]
+        },
+        {
+            "name": "Run Crawler: Pubmed - PROD",
+            "type": "python",
+            "request": "launch",
+            "program": "./app_crawl_pubmed.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "\"Literature Search\" + NLP",
+                "Crawler_Test",
+                "./.out/Crawler_Test.articles.json",
+                "--production"
+            ]
         }
     ]
 }
