@@ -75,7 +75,7 @@ if __name__ == '__main__':
         # Init Crawler Settings
         ###################
         settings = get_project_settings()
-        settings['SPIDER_MODULES'] = ['Crawler.crawler.spiders']
+        settings['SPIDER_MODULES'] = ['crawler.spiders']
         settings['LOG_ENABLED'] = LOG_ENABLED
         settings['LOG_LEVEL'] = LOG_LEVEL
         settings['RETRY_TIMES'] = 5
