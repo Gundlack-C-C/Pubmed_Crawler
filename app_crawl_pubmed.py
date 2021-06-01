@@ -41,8 +41,6 @@ if __name__ == '__main__':
                             help='folder output', default="./.out")
         parser.add_argument('-l', '--log', type=str,
                             help='Target path for logging.', default=None)
-        parser.add_argument('--model', type=str,
-                            help='Target path for Transformers model default: "./.model"', default="./.model")
         parser.add_argument(
             '-c', '--cached', help='Use cached results if available - Output File already existing and not older than 5 days. Default=False', action='store_true')
         parser.add_argument(
@@ -144,4 +142,6 @@ if __name__ == '__main__':
         # Error Management
         ###################
         logging.error("Crawler Error!")
+
+        
         logging.error(e)
