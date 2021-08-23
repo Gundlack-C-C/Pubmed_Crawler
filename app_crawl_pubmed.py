@@ -12,21 +12,12 @@ import logging
 import pickle
 from crawler.spiders.pubmed import PubmedSpider
 
-import scrapy
 from scrapy.signalmanager import dispatcher
 from scrapy import signals
 from scrapy.utils.project import get_project_settings
 from scrapy.crawler import CrawlerProcess
 
 import argparse
-
-
-# Callbacks
-
-
-def empty_fn(x, y):
-    pass
-
 
 def str2hex(text):
     return binascii.hexlify(text.encode()).decode('utf-8')
