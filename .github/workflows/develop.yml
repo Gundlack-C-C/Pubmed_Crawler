@@ -26,10 +26,14 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.BASE_URL_PROD }}/crawler-pupmed-service:latest
+          tags: ${{ secrets.BASE_URL_PROD }}/crawler-pubmed:latest
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      # Reload the deployment, which takes the last version of "latest"
       - name: Deploy Image in the Cluster
         uses: steebchen/kubectl@v2.0.0
         with:
           config: ${{ secrets.KUBE_CONFIG_DATA }}
-          command: rollout restart deployment/crawler-pupmed-service-deployment -n ${{ secrets.NAMESPACE_DEV }} # Reload the deployment, which takes the last version of "latest"
-
+          command: rollout restart deployment/crawler-pubmed-deployment -n ${{ secrets.NAMESPACE_DEV }} && kubectl rollout restart deployment/crawler-pubmed-deployment -n ${{ secrets.NAMESPACE_DEV }}
