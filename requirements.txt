@@ -1,1 +1,7 @@
 scrapy
+flask
+flask-cors
+requests
+pika
+firebase-admin
+gunicorn

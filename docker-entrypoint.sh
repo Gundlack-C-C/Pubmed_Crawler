@@ -25,7 +25,7 @@ elif [ "$MODE" = "Worker" ]; then
 elif [ "$MODE" = "Service" ]; then
     echo "Service Mode"
 	python3 app_server.py
-elif [ "$MODE" = "DEV" ]; then
+elif [ "$MODE" = "Dev" ]; then
     echo "Development Mode - Sleep to connect to container"
     /bin/sh -c "while sleep 1000; do :; done"
 else
