@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  rabbitmq:
+    image: rabbitmq:latest
+    container_name: querymq
+    ports:
+      - "5672:5672"
+  server:
+    build: "."
+    image: pupymed/pubmed-crawler
+    container_name: query-service
+    ports:
+      - "5001:5001"
+    depends_on: [rabbitmq]
+    working_dir: /usr/src/app
+    volumes:
+      - ./.log/:/usr/src/app/.log
+    env_file:
+      - rabbitmq-variables.env
+    environment:
+      - MODE=Service

@@ -1,9 +1,14 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.140.1/containers/python-3
 {
-	"name": "pupymed/crawler",
-	"context": "..",
-	"dockerFile": "../Dockerfile",
+	"name": "pubmed/crawler",
+	"dockerComposeFile": [
+		"../docker-compose.yml",
+		"docker-compose.extend.yml"
+	],
+	"service": "server",
+	"workspaceFolder": "/usr/src/app",
+	"shutdownAction": "stopCompose",
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
 		"terminal.integrated.shell.linux": "/bin/bash",
