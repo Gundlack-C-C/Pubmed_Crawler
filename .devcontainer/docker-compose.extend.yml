@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  server:
+  worker:
     volumes:
       - .:/usr/src/app:cached
     environment:

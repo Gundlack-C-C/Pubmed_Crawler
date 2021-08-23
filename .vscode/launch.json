@@ -13,6 +13,14 @@
             "cwd": "${workspaceFolder}"
         },
         {
+            "name": "Worker - RabbitMQ",
+            "type": "python",
+            "request": "launch",
+            "program": "${cwd}/app_workermq.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
             "name": "Scrapy: Crawl Current",
             "type": "python",
             "request": "launch",

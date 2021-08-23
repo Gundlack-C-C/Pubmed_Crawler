@@ -6,6 +6,8 @@ services:
     container_name: querymq
     ports:
       - "5672:5672"
+    networks:
+      - rabbitmq
   server:
     build: "."
     image: pupymed/pubmed-crawler
@@ -20,3 +22,21 @@ services:
       - rabbitmq-variables.env
     environment:
       - MODE=Service
+    networks:
+      - rabbitmq
+  worker:
+    build: "."
+    image: pupymed/pubmed-crawler
+    container_name: query-worker
+    depends_on: [rabbitmq, server]
+    working_dir: /usr/src/app
+    volumes:
+      - ./.log/:/usr/src/app/.log
+    env_file:
+      - rabbitmq-variables.env
+    environment:
+      - MODE=Worker
+    networks:
+      - rabbitmq
+networks:
+  rabbitmq:
