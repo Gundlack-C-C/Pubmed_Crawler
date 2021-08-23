@@ -84,7 +84,8 @@ def Commit_Query():
     query = data.get('query', None)
     id = data.get('id', None)
 
-    session_id = QueryServer.update_query(query, _id=id)
+    mode = os.getenv('RABBITMQ_CRAWLER_PUBMED_ROUTING_KEY')
+    session_id = QueryServer.update_query(query, _id=id, mode=mode)
 
     return jsonify(session_id)
 
