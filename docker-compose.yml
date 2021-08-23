@@ -32,6 +32,7 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./.log/:/usr/src/app/.log
+      - ./.out/:/usr/src/app/.out
     env_file:
       - rabbitmq-variables.env
     environment:
