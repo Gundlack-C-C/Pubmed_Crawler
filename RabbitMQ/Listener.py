@@ -1,8 +1,5 @@
-import pika
 import os
 
-from pika.exchange_type import ExchangeType
-from pika.spec import Queue
 import RabbitMQ.Configuration as Configuration
 from RabbitMQ.RabbitMQConnection import RabbitMQConnection, RabbitMQException
 
