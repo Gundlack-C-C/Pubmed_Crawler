@@ -5,9 +5,13 @@ import os
 import sys
 import argparse
 import json
+import subprocess
+import binascii
 
 fire_connector = None
 
+def str2hex(text):
+    return binascii.hexlify(text.encode()).decode('utf-8')
 
 def query_request_callback(ch, method, properties, body):
 
@@ -21,6 +25,11 @@ def query_request_callback(ch, method, properties, body):
         assert text != None, "Invalid Session Status Body! Missing field 'text'"
 
         logging.info(f"Execute Query: [{request}]")
+
+        logfile = f".log/{str2hex(text)}.crawler.log"
+        args = ["python3", "./app_crawl_pubmed.py", text, "--production", "-l", logfile]
+        process = subprocess.Popen(args)
+        process.wait()
 
         logging.info(" [x] Done")
     except Exception as e:
